@@ -4,16 +4,21 @@ import 'package:vonture_app/core/colors.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton(
-      {super.key, required this.text, required this.size, required this.heigh});
+      {super.key,
+      required this.text,
+      required this.size,
+      required this.heigh,
+      required this.onPressed});
   final String text;
   final double size, heigh;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
       child: GestureDetector(
-        onTap: () {},
+        onTap: onPressed,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),

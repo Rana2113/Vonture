@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vonture_app/core/api_constants.dart';
 import 'package:vonture_app/core/colors.dart';
 import 'package:vonture_app/core/utils/app_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:vonture_app/core/utils/service_locator.dart';
 
-void main() {
+void main() async {
+  setup();
+  await Hive.initFlutter();
+  await Hive.openBox(kIdBoxString);
+  await Hive.openBox(kTokenBoxString);
   runApp(const VontureApp());
 }
 

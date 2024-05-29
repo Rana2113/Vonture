@@ -9,9 +9,10 @@ abstract class Failure {
 class ServerFailure extends Failure {
   ServerFailure(super.errorMessages);
 
-  // ignore: empty_constructor_bodies
-  factory ServerFailure.fromDioException(DioException dioException) {
-    switch (dioException.type) {
+  factory ServerFailure.fromDioException(DioException e) {
+    final statusCode = e.response?.statusCode;
+    final responseData = e.response?.data;
+    switch (e.type) {
       case DioExceptionType.connectionTimeout:
         return ServerFailure('Connection timeout with ApiServer');
       case DioExceptionType.sendTimeout:
@@ -19,14 +20,13 @@ class ServerFailure extends Failure {
       case DioExceptionType.receiveTimeout:
         return ServerFailure('Recieve timeout with ApiServer');
       case DioExceptionType.badResponse:
-        return ServerFailure.fromResponse(
-            dioException.response!.statusCode!, dioException.response!.data);
+        return ServerFailure.fromResponse(statusCode!, responseData!);
       case DioExceptionType.cancel:
         return ServerFailure('Request to ApiServer was cancelled');
       case DioExceptionType.connectionError:
         return ServerFailure('Connection timeout with ApiServer');
       case DioExceptionType.unknown:
-        if (dioException.message!.contains('SoketEcxeption')) {
+        if (e.message!.contains('SoketEcxeption')) {
           return ServerFailure('No Internet Connection');
         }
         return ServerFailure('Unexpected Error, Please try later!');
@@ -37,13 +37,13 @@ class ServerFailure extends Failure {
 
   factory ServerFailure.fromResponse(int statusCode, dynamic response) {
     if (statusCode == 400 || statusCode == 401 || statusCode == 403) {
-      return ServerFailure(response['error']['message']);
+      return ServerFailure(response["message"]);
     } else if (statusCode == 404) {
       return ServerFailure('Your request not found, Please try later!');
     } else if (statusCode == 500) {
       return ServerFailure('Internet Server error, Please try later!');
     } else {
-      return ServerFailure('Opps there was an error, Please try later!');
+      return ServerFailure("message");
     }
   }
 }
